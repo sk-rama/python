@@ -1,0 +1,10 @@
+method/keyword  parameters      uses
+open()  filename and open mode (optional)       create a file object by opening/creating the file in the specified read/write mode
+with    -       use it together with open(); closes the file after the suite completes
+read()  size (optional)         read the file up to the size specified if set
+readline()      size (optional)         read a single line with a size limit if set
+readlines()     size (optional)         create a list of the read lines with an optional size hint
+for loop        -       iterate the lines of the file
+write()         the string      write the string to the file that is opened with a certain writeable mode
+writelines()    the list of strings     write the list of strings to the file that is opened with a certain writeable mode
+close()         -       close the opened file 

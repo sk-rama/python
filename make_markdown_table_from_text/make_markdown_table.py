@@ -18,7 +18,8 @@ close()         -       close the opened file
 def get_lines_from_file(file):
     with open(file) as f:
         lines = f.read().splitlines()
-        row_list = [line.split('  ') for line in lines]
+        row_list = [row.replace('\t', '    ') for row in lines]
+        row_list = [row.split('  ') for row in row_list]
         row_list = list(map(lambda x: list(filter(bool, x)), row_list)) 
         row_list = [[str(item).strip() for item in row] for row in row_list] 
         return row_list
@@ -38,9 +39,9 @@ def max_string_lenght(d2_list: list) -> list:
 
 
 if __name__ == '__main__':
-    print(text)
-    #row_list = get_lines_from_file(file)
-    row_list = get_lines_from_text(text)
+    row_list = get_lines_from_file(file)
+    #row_list = get_lines_from_text(text)
+    print(row_list)
     max_len_list = max_string_lenght(row_list)
     for row_number, row in enumerate(row_list, start=1):
         column_counts = len(row)

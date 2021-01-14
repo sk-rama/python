@@ -15,8 +15,11 @@ LDAP_SERVER = '192.168.0.207'
 LDAP_PORT = 389
 LDAP_SEARCH_BASE = 'ou=mailaccounts,dc=secar,dc=boh'
 LDAP_SEARCH_SCOPE = 'SUBTREE'
-# LDAP_SEARCH_FILTER = '(mailForwardingAddress=*@secar2.cz)'
+#LDAP_SEARCH_FILTER = '(mailForwardingAddress=*@secar2.cz)'
 LDAP_SEARCH_FILTER = '(mail=rama-sms@secar.cz)'
+
+# For what DN not change ldap password
+WHITELIST_DN = ['uid=tiskarna-pardubice,ou=mailaccounts,dc=secar,dc=boh', 'external-suppliers,ou=mailaccounts,dc=secar,dc=boh', 'uid=icinga-imap-lan,ou=mailaccounts,dc=secar,dc=boh']
 
 
 HASH_FUNCTION = ldap3.HASHED_MD5
@@ -85,6 +88,10 @@ def ldap_search(ldap_conn):
         generator     = False
     )
     dn_list = [entry['dn'] for entry in entry_list]
+    # remove items from WHITELIST_DN 
+    for item in dn_list:
+        if item in WHITELIST_DN:
+            dn_list.remove(item)
     return dn_list, entry_list
 
 
@@ -119,4 +126,5 @@ def change_password_in_bach(ldap_conn):
         print('dn list is empty')
 
 
-change_password_in_bach()
+if __name__ == "__main__":
+    change_password_in_bach()

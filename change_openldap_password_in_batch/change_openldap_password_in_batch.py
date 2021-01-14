@@ -19,7 +19,11 @@ LDAP_SEARCH_SCOPE = 'SUBTREE'
 LDAP_SEARCH_FILTER = '(mail=rama-sms@secar.cz)'
 
 # For what DN not change ldap password
-WHITELIST_DN = ['uid=tiskarna-pardubice,ou=mailaccounts,dc=secar,dc=boh', 'external-suppliers,ou=mailaccounts,dc=secar,dc=boh', 'uid=icinga-imap-lan,ou=mailaccounts,dc=secar,dc=boh']
+WHITELIST_DN = [
+                'uid=tiskarna-pardubice,ou=mailaccounts,dc=secar,dc=boh', 
+                'external-suppliers,ou=mailaccounts,dc=secar,dc=boh', 
+                'uid=icinga-imap-lan,ou=mailaccounts,dc=secar,dc=boh'
+               ]
 
 
 HASH_FUNCTION = ldap3.HASHED_MD5

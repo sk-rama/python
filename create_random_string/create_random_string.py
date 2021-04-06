@@ -9,7 +9,7 @@ import random
 # 'string'.maketrans({"'": '', '"': ''})
 {39: '', 34: ''}
 # A cryptographically more secure version:
-print(''.join(random.SystemRandom().choice(string.punctuation.translate({39: '', 34: ''}) + string.ascii_letters) for _ in range(128)))
+print(''.join(random.SystemRandom().choice(string.punctuation.translate({39: '', 34: ''}) + string.ascii_letters + string.digits) for _ in range(128)))
 
 # A cryptographically less secure secure version, but more quickly
 print(''.join(random.choices(string.punctuation + string.ascii_letters, k=128)))

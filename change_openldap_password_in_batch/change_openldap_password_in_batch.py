@@ -56,7 +56,7 @@ def openldap_md5_hash(text: str):
 
 
 def create_random_string(string_lenght):
-    chars = string.punctuation + string.ascii_letters
+    chars = string.punctuation + string.ascii_letters + string.digits
     return ''.join(random.SystemRandom().choice(chars) for _ in range(string_lenght))
 
 

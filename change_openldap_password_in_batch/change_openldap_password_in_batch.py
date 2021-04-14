@@ -22,7 +22,8 @@ LDAP_SEARCH_FILTER = '(mail=rama-sms@secar.cz)'
 WHITELIST_DN = [
                 'uid=tiskarna-pardubice,ou=mailaccounts,dc=secar,dc=boh', 
                 'external-suppliers,ou=mailaccounts,dc=secar,dc=boh', 
-                'uid=icinga-imap-lan,ou=mailaccounts,dc=secar,dc=boh'
+                'uid=icinga-imap-lan,ou=mailaccounts,dc=secar,dc=boh',
+                'uid=tankovaci_karty,ou=mailaccounts,dc=secar,dc=boh'
                ]
 
 

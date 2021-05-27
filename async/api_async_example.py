@@ -23,6 +23,7 @@ print("total time for with synchronous execution >> ", time_without_async, " sec
 import asyncio
 import aiohttp  # external library
 
+
 def merge_lists(results_from_fc):
     """
     Function for merging multiple lists
@@ -31,6 +32,7 @@ def merge_lists(results_from_fc):
     for li in results_from_fc:
         combined_list.extend(li)    
     return combined_list
+
   
 async def main():
     headers = {'content-type': 'application/json'}
@@ -43,12 +45,14 @@ async def main():
         all_results = await asyncio.gather(*tasks)
         combined_list = merge_lists(all_results)
         return combined_list
+    
       
 async def get_rhyming_words(session, word):
     url = f"https://api.datamuse.com/words?rel_rhy={word}&max=1000"
     async with session.get(url) as response:
         result_data = await response.json()
         return result_data
+    
       
 async_func_start_time = time.time()
 response2 = asyncio.get_event_loop().run_until_complete(main())

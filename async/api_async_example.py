@@ -56,6 +56,7 @@ async def get_rhyming_words(session, word):
       
 async_func_start_time = time.time()
 response2 = asyncio.get_event_loop().run_until_complete(main())
-time_with_async = time.time() - async_func_start_timeprint("\nTotal time with async/await execution >> ", time_with_async, " seconds")
+time_with_async = time.time() - async_func_start_time
+print("\nTotal time with async/await execution >> ", time_with_async, " seconds")
 total_improvement = (time_without_async - time_with_async) / time_without_async * 100
 print(f"\n{'*' * 100}\n{' ' * 32}Improved by {total_improvement} %\n{'*' * 100}")

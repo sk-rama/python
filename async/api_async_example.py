@@ -12,6 +12,7 @@ def make_req_syncronously(words_arr):
             rhyming_word = item.get("word", "")
             final_res.append({"word": word, "rhyming_word": rhyming_word})
     return final_res
+
   
 without_async_start_time = time.time()
 response = make_req_syncronously(words)

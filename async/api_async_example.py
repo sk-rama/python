@@ -14,6 +14,7 @@ def make_req_syncronously(words_arr):
     return final_res
 
   
+    
 without_async_start_time = time.time()
 response = make_req_syncronously(words)
 time_without_async = time.time() - without_async_start_time
@@ -33,6 +34,7 @@ def merge_lists(results_from_fc):
         combined_list.extend(li)    
     return combined_list
 
+
   
 async def main():
     headers = {'content-type': 'application/json'}
@@ -46,12 +48,14 @@ async def main():
         combined_list = merge_lists(all_results)
         return combined_list
     
+    
       
 async def get_rhyming_words(session, word):
     url = f"https://api.datamuse.com/words?rel_rhy={word}&max=1000"
     async with session.get(url) as response:
         result_data = await response.json()
         return result_data
+    
     
       
 async_func_start_time = time.time()

@@ -44,6 +44,7 @@ def edit_video(ffmpeg: pathlib.Path, mkvpropedit:pathlib.Path, i_file: pathlib.P
 def mp_parameters(dirs):
     parameters = []
     files = [file for dir in dirs for file in pathlib.Path(dir).glob('**/*') if file.exists() and file.is_file() and file.suffix in ext]
+    files.sort(key=lambda f: str(f).lower())
     for file in files:
         old_file = pathlib.Path(file)
         new_name = file.stem + append + '.mkv'

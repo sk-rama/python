@@ -26,7 +26,8 @@ WHITELIST_DN = [
                 'uid=tankovaci_karty,ou=mailaccounts,dc=secar,dc=boh',
                 'uid=spravce,ou=mailaccounts,dc=secar,dc=boh',
                 'uid=systems,ou=mailaccounts,dc=secar,dc=boh',
-                'uid=servisdesk.bauplus@facilitycontrol.cz,ou=mailaccounts,dc=secar,dc=boh'
+                'uid=servisdesk.bauplus@facilitycontrol.cz,ou=mailaccounts,dc=secar,dc=boh',
+                'hd.bauplus@facilitycontrol.cz,ou=mailaccounts,dc=secar,dc=boh'
                ]
 
 

@@ -6,10 +6,10 @@ import string
 import random
 
 # remove some chars from allowed chars like " or '
-# 'string'.maketrans({"'": '', '"': ''})
-{39: '', 34: ''}
+# 'string'.maketrans({"'": '', '"': '', '^': '', '|': '', '\\': ''})
+# {39: '', 34: '', 94: '', 124: '', 92: ''}
 # A cryptographically more secure version:
-print(''.join(random.SystemRandom().choice(string.punctuation.translate({39: '', 34: ''}) + string.ascii_letters + string.digits) for _ in range(128)))
+print(''.join(random.SystemRandom().choice(string.punctuation.translate({39: '', 34: '', 94: '', 124: '', 92: ''}) + string.ascii_letters + string.digits) for _ in range(128)))
 
 # A cryptographically less secure secure version, but more quickly
 print(''.join(random.choices(string.punctuation + string.ascii_letters + string.digits, k=128)))

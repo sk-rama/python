@@ -11,6 +11,9 @@ import random
 # A cryptographically more secure version:
 print(''.join(random.SystemRandom().choice(string.punctuation.translate({39: '', 34: '', 94: '', 124: '', 92: ''}) + string.ascii_letters + string.digits) for _ in range(128)))
 
+# A cryptographically more secure version with only alphanumerical chars:
+print(''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(32)))
+
 # A cryptographically less secure secure version, but more quickly
 print(''.join(random.choices(string.punctuation + string.ascii_letters + string.digits, k=128)))
 

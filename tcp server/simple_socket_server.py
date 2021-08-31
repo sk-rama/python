@@ -81,10 +81,10 @@ if __name__ == '__main__':
 
     HOST, PORT = "0.0.0.0", 9999
 
-with ForkingTcpServer((HOST, PORT), ForkingRequestHandler) as server:
-    # Activate the server; this will keep running until you
-    # interrupt the program with Ctrl-C
-    logger = logging.getLogger('server')
-    print('Server loop running in process:', os.getpid())
-    logger.info('Server on %s:%s', HOST, PORT)
-    server.serve_forever()
+    with ForkingTcpServer((HOST, PORT), ForkingRequestHandler) as server:
+        # Activate the server; this will keep running until you
+        # interrupt the program with Ctrl-C
+        logger = logging.getLogger('server')
+        print('Server loop running in process:', os.getpid())
+        logger.info('Server on %s:%s', HOST, PORT)
+        server.serve_forever()

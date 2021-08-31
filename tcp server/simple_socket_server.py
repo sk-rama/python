@@ -13,7 +13,7 @@ class ForkingRequestHandler(socketserver.BaseRequestHandler):
     
     def __init__(self, request, client_address, server):
         self.logger = logging.getLogger('ForkingRequestHandler')
-        self.logger.debug(f'ForkingRequestHandler __init__ {os.getpid()}')
+        self.logger.debug(f'__init__ {os.getpid()}')
         socketserver.BaseRequestHandler.__init__(self, request, client_address, server)
         return
 

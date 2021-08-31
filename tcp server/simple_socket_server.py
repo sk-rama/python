@@ -13,16 +13,16 @@ class ForkingRequestHandler(socketserver.BaseRequestHandler):
     
     def __init__(self, request, client_address, server):
         self.logger = logging.getLogger('ForkingRequestHandler')
-        self.logger.debug('__init__')
+        self.logger.debug(f'ForkingRequestHandler __init__ {os.getpid()}')
         socketserver.BaseRequestHandler.__init__(self, request, client_address, server)
         return
 
     def setup(self):
-        self.logger.debug('setup')
+        self.logger.debug(f'setup {os.getpid()}')
         return socketserver.BaseRequestHandler.setup(self)
 
     def handle(self):
-        self.logger.debug('handle')
+        self.logger.debug(f'handle {os.getpid()}')
 
         # Echo the back to the client
         data = self.request.recv(1024)
@@ -35,43 +35,48 @@ class ForkingRequestHandler(socketserver.BaseRequestHandler):
         return
 
     def finish(self):
-        self.logger.debug('finish')
+        self.logger.debug(f'finish {os.getpid()}')
         return socketserver.BaseRequestHandler.finish(self)
 
 class ForkingTcpServer(socketserver.ForkingTCPServer, socketserver.TCPServer):
     def __init__(self, server_address, handler_class=ForkingRequestHandler):
         self.logger = logging.getLogger('ForkingTcpServer')
-        self.logger.debug('__init__')
+        self.logger.debug(f'__init__ {os.getpid()}')
         socketserver.ForkingTCPServer.__init__(self, server_address, handler_class)
         return
 
     def server_activate(self):
-        self.logger.debug('server_activate')
+        self.logger.debug(f'server_activate {os.getpid()}')
         socketserver.ForkingTCPServer.server_activate(self)
         return
 
+    def serve_forever(self):
+        self.logger.debug(f'waiting for request {os.getpid()}')
+        self.logger.info('Handling requests, press <Ctrl-C> to quit')
+        return socketserver.ForkingTCPServer.serve_forever(self)
+
     def handle_request(self):
-        self.logger.debug('handle_request')
+        self.logger.debug(f'handle_request {os.getpid()}')
         return socketserver.ForkingTCPServer.handle_request(self)
 
     def verify_request(self, request, client_address):
-        self.logger.debug('verify_request(%s, %s)', request, client_address)
+        self.logger.debug(f'verify_request {os.getpid()}: requeest: {request}, client: {client_address}')
         return socketserver.ForkingTCPServer.verify_request(self, request, client_address)
 
     def process_request(self, request, client_address):
-        self.logger.debug('process_request(%s, %s)', request, client_address)
+        self.logger.debug(f'process_request {os.getpid()}: request: {request}, client: {client_address}')
         return socketserver.ForkingTCPServer.process_request(self, request, client_address)
 
     def server_close(self):
-        self.logger.debug('server_close')
+        self.logger.debug(f'server_close {os.getpid()}')
         return socketserver.ForkingTCPServer.server_close(self)
 
     def finish_request(self, request, client_address):
-        self.logger.debug('finish_request(%s, %s)', request, client_address)
+        self.logger.debug(f'finish_request {os.getpid()}: request: {request}, client: {client_address}')
         return socketserver.ForkingTCPServer.finish_request(self, request, client_address)
 
     def close_request(self, request_address):
-        self.logger.debug('close_request(%s)', request_address)
+        self.logger.debug(f'close_request {os.getpid()}: request address: {request_address}')
         return socketserver.ForkingTCPServer.close_request(self, request_address)
 
 

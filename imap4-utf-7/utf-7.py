@@ -1,6 +1,8 @@
 # -*- coding: latin-1 -*-
 
 """
+source: https://gist.github.com/rakab/5353e203564113c9ea0f0ef8000530b3
+
 Imap folder names are encoded using a special version of utf-7 as defined in RFC
 2060 section 5.1.3.
 

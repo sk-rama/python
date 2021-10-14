@@ -1,3 +1,5 @@
+# source: https://github.com/mjs/imapclient/blob/master/imapclient/imap_utf7.py
+
 # This file contains two main methods used to encode and decode UTF-7
 # string, described in the RFC 3501. There are some variations specific
 # to IMAP4rev1, so the built-in Python UTF-7 codec can't be used instead.

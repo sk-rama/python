@@ -37,7 +37,7 @@ class Line:
             int(re.VERBOSE)    = 64
             int(re.DEBUG)      = 128
             int(re.ASCII)      = 256
-        strip: List[chars]
+        strip: str
             - Return a copy of the string with the leading and trailing characters removed.
             - The chars argument is a string specifying the set of characters to be removed.    
             - If omitted or None, the chars argument defaults to removing whitespace.

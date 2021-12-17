@@ -21,7 +21,7 @@ class Line:
         if '\r\n' in self.line:
             raise ValueError('line contain a new line char: \\r\\n')
 
-    def re_split(self, re_sep=r'[ \t]+', flags=0, strip:str = None) -> List[str]:
+    def re_split(self, re_sep=r'[ \t]+', flags=0, strip:List[str] = None) -> List[str]:
         '''
         Parameters
         ----------

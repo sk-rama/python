@@ -48,8 +48,8 @@ queue_to_message_map = {}
 message_id           = {}
         
 
-postfix_log       = '/var/log/mail/fw2.log'
-position_queue_id = 5                           # index as list - started from zero 
+postfix_log       = '/var/log/mail/mail.log'
+position_queue_id = 3                           # index as list - started from zero 
 temp_dir          = '/tmp/abrakadabraka'
 
 postfix_status = ['sent', 'deferred', 'bounced', 'expired']
@@ -57,7 +57,7 @@ postfix_status = ['sent', 'deferred', 'bounced', 'expired']
 ignored_recipients      = ['lapac@secar.cz', 'lapac-spamov@secar.cz', 'icinga@secar.cz']
 ignored_relays          = ['192.168.0.207[192.168.0.207]:2600']
 
-ok_relay_daemons        = ['postfix/smtp']
+ok_relay_daemons        = ['postfix/smtp', 'postfix/smtp-10s/smtp', 'postfix/smtp/smtp']
 
 number_lines_all            = 0
 number_lines_processed      = 0
@@ -78,6 +78,9 @@ set_ok_recipients = set()
 most_active_postfix_clients = collections.Counter()
 # counter for postfix clients who connect to postfix times number of recipients in one connect
 most_active_postfix_clients_nrctp = collections.Counter()
+
+# counter for emails address (mail from) that try send email
+most_active_emails = collections.Counter()
 
 
 
@@ -203,7 +206,7 @@ def sort_counter_dict(counter_dict):
     Returns
     -------
     counter_dict : sorted collections.Counter()
-        example: Counter({'key_08': 8, 'key_02': 2})
+        example: Counter({'key_02': 8, 'key_01': 2})
     '''
     try:
         # sort input collections.Counter() 
@@ -214,6 +217,32 @@ def sort_counter_dict(counter_dict):
         for k,v in my_var.items():
             counter_dict[k] = v
         return counter_dict
+    except:
+        print("uncaught exception: %s", traceback.format_exc())
+
+
+def count_dict_from_counter_dict(dict_from_counter_dict):
+    '''
+    This function return sorted dict from counter dict
+
+    Parameters
+    ----------
+    dict_from_counter_dict : dict(collections.Counter())
+        example:
+            dict{key_1: {'under_key_01': 2, 'under_key_02': 8}, key_2: {'under_key_04': 2, 'under_key_01': 8}})
+
+    Returns
+    -------
+    counter_dict : sorted collections.Counter()
+        example: Counter({'key_08': 8, 'key_02': 2})
+    '''
+    try:
+        new_counter = collections.Counter()
+        keys = dict_from_counter_dict.keys()
+        for key in keys:
+            for under_key in dict_from_counter_dict[key].keys():
+                new_counter.update({str(key): dict_from_counter_dict[key][under_key]})
+        return new_counter.most_common()
     except:
         print("uncaught exception: %s", traceback.format_exc())
 
@@ -701,6 +730,41 @@ def most_active_posftix_clients_with_number_emails(file_dict, counter_dict):
         return False
 
 
+def most_active_emails(file_dict, counter_dict):
+    '''
+    This function take a dict and update global collections.Counter counter_dict
+    We count the postfix 'mail from' that connect to postfix and try send emails (one email address can send N emails in one connect session)
+
+    Parameters
+    ----------
+    file_dict : dictionary
+        It is dictionary loaded from file
+    counter_dict : collections.Counter
+        It is global variable from collections.Counter where we update a counters from 'file_dict'
+
+    Returns
+    -------
+    counter_dict : collections.Counter
+        key     : the key is a email address (from) that try send emails
+        value   : is the number of all emails that email address (in the key) attempts to send
+        example : Counter({'email_1@sherlog.com': 20408, 'email_4@sherlog.com': 14499, 'email_10@sherlog.com': 2761})
+    '''
+    try:
+        # get a 'message_id' from 'file_dict' - it is first key in dictionary
+        msg_id = list(file_dict.keys())[0]
+        # get a first queue_id from the 'msg-id'
+        first_queue_id = list(file_dict[msg_id].keys())[0]
+        # get a 'from' value from first queue_id in the 'msg_id'
+        email_from = file_dict[msg_id][first_queue_id]['from']
+        # get 'from' emails count in one session
+        nrcpt = int(file_dict[msg_id][first_queue_id]['nrcpt'])
+        # update global collections.Counter with 'client' value and number of emails
+        counter_dict.update({email_from: nrcpt})
+    except:
+        #print("uncaught exception: %s", traceback.format_exc())
+        return False
+
+
 
 def statistic_clients_to_recipients(file_dict, counter_dict):
     '''
@@ -1028,19 +1092,22 @@ def make_statistic():
             return_ok_recipients(loaded_dict, set_ok_recipients)
         tqdm_number.update(1)
     tqdm_number.close()  
-    #sort_counter_dict(most_active_postfix_clients_nrctp)
-    #save_dict_to_file(json.dumps(most_active_postfix_clients_nrctp, indent=4, sort_keys=False), 'most_active_postfix_clients_nrctp.txt')
+    sort_counter_dict(most_active_postfix_clients_nrctp)
+    save_dict_to_file(json.dumps(most_active_postfix_clients_nrctp, indent=4, sort_keys=False), 'most_active_postfix_clients_nrctp.txt')
     print(bounced_emails_counter)
     sort_counter_dict(bounced_emails_counter)
     save_dict_to_file(json.dumps(bounced_emails_counter, indent=4, sort_keys=False), 'bounced_emails_counter.txt')
     sort_counter_dict_in_dict(bounced_statistic_01_counter)
     save_dict_to_file(json.dumps(bounced_statistic_01_counter, indent=4, sort_keys=False), 'bounced_statistic_01_counter.txt')
+    save_dict_to_file(json.dumps(count_dict_from_counter_dict(bounced_statistic_01_counter), indent=4, sort_keys=False), 'bounced_statistic_01_counter-sorted.txt') 
     sort_counter_dict_in_dict(bounced_statistic_02_counter)
     save_dict_to_file(json.dumps(bounced_statistic_02_counter, indent=4, sort_keys=False), 'bounced_statistic_02_counter.txt')
     sort_counter_dict_in_dict(clients_to_recipients_counter)
     save_dict_to_file(json.dumps(clients_to_recipients_counter, indent=4, sort_keys=False), 'clients_to_recipients_counter.txt')
+    save_dict_to_file(json.dumps(count_dict_from_counter_dict(clients_to_recipients_counter), indent=4, sort_keys=False), 'clients_to_recipients_counter-sorted.txt') 
     sort_counter_dict_in_dict(sasl_usernames_to_recipents_counter)
     save_dict_to_file(json.dumps(sasl_usernames_to_recipents_counter, indent=4, sort_keys=False), 'sasl_usernames_to_recipents_counter.txt')
+    save_dict_to_file(json.dumps(count_dict_from_counter_dict(sasl_usernames_to_recipents_counter), indent=4, sort_keys=False), 'sasl_usernames_to_recipents_counter-sorted.txt')
     save_dict_to_file(json.dumps(list(set_ok_recipients), indent=4, sort_keys=False), 'set_ok_recipients.txt')
     #print(f"most active connected clients are: {most_active_postfix_clients}")
     #print("--------------------------------------------------------")
@@ -1065,4 +1132,3 @@ def make_statistic():
 if __name__ == "__main__":
     parse_log_file()
     make_statistic()     
-    

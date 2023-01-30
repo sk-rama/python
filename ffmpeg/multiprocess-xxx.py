@@ -13,17 +13,22 @@ from tqdm import tqdm
 # pip install -U get-video-properties
 from videoprops import get_video_properties
 
-ffmpeg = 'c:\\Users\\rrastik\\Documents\\aplikace-programy\\rtmdump\\ffmpeg\\bin\\ffmpeg.exe'
+ffmpeg      = 'c:\\Users\\rrastik\\Documents\\aplikace-programy\\rtmdump\\ffmpeg\\bin\\ffmpeg.exe'
 mkvpropedit = 'c:\\Users\\rrastik\\Documents\\aplikace-programy\\mkvtoolnix\\mkvpropedit.exe'
-#dirs = ["z:\\Serialy\\Deuce - Špína Manhattanu\\seria 01 - 1080p\\", "z:\\Serialy\\Narcos\\seria 01 - 1080p.BluRay.DTS5.1.x264\\", "g:\\JDownloader\\serial Zlocin v Polne\\", "g:\\JDownloader\\serial How Not to Live Your Life s03\\", "g:\\JDownloader\\serial How Not to Live Your Life s02\\", "g:\\JDownloader\\serial How Not to Live Your Life s01\\", "g:\\JDownloader\\serial Klondike\\", "g:\\JDownloader\\serial Dark S03 cz sub\\", "g:\\JDownloader\\serial Dabing Street  s01\\", "g:\\JDownloader\\serial Auticko Otik S01\\", "g:\\JDownloader\\HD dokument Prehistoric Worlds _ Nos mondes disparus _ Pravěká Země (2019)\\"]
-dirs = ["e:\\ffmpeg-xxx\\"]
-ext = ['.wmv', '.avi', '.mp4', '.mkv', '.ts']
-append = '_HEVC'
+#dirs       = ["z:\\Serialy\\Deuce - Špína Manhattanu\\seria 01 - 1080p\\", "z:\\Serialy\\Narcos\\seria 01 - 1080p.BluRay.DTS5.1.x264\\", "g:\\JDownloader\\serial Zlocin v Polne\\", "g:\\JDownloader\\serial How Not to Live Your Life s03\\", "g:\\JDownloader\\serial How Not to Live Your Life s02\\", "g:\\JDownloader\\serial How Not to Live Your Life s01\\", "g:\\JDownloader\\serial Klondike\\", "g:\\JDownloader\\serial Dark S03 cz sub\\", "g:\\JDownloader\\serial Dabing Street  s01\\", "g:\\JDownloader\\serial Auticko Otik S01\\", "g:\\JDownloader\\HD dokument Prehistoric Worlds _ Nos mondes disparus _ Pravěká Země (2019)\\"]
+dirs        = ["g:\\ffmpeg-xxx\\"]
+log         = "g:\\ffmpeg-xxx\\log.log"
+ext         = ['.wmv', '.avi', '.mp4', '.mkv', '.ts', '.asf', '.m2ts', '.mov']
+append      = '_HEVC'
 
 
 def encode_video(ffmpeg: pathlib.Path, i_file: pathlib.Path, o_file: pathlib.Path):
+    # pro inthecrack crf = 28, normalne crf=24
     #command_line = f'"{ffmpeg}" -i "{str(i_file)}" -map 0 -map -v -map V -c copy -c:V:0 libx265 -preset veryfast -crf 30 "{str(o_file)}"'
-    command_line_ffmpeg = f'"{ffmpeg}" -i "{str(i_file)}" -map V -map a -map s? -c:v libx265 -vtag hvc1 -preset veryfast -crf 26 -c:a copy -c:s copy "{str(o_file)}"'     
+    if i_file.suffix == '.ts':
+        command_line_ffmpeg = f'"{ffmpeg}" -i "{str(i_file)}" -map V -map a -c:v libx265 -vtag hvc1 -preset veryfast -crf 26 -c:a copy "{str(o_file)}"'
+    else:
+        command_line_ffmpeg = f'"{ffmpeg}" -i "{str(i_file)}" -map V -map a -map s? -c:v libx265 -vtag hvc1 -preset veryfast -crf 26 -c:a copy -c:s copy "{str(o_file)}"'     
     print(f"I started command: {command_line_ffmpeg} \n\n")   
     process = subprocess.run(command_line_ffmpeg, shell=True, capture_output=True)
     return process
@@ -52,7 +57,7 @@ def mp_parameters(dirs):
         new_name = file.stem + append + '.mkv'
         new_file = file.with_name(new_name)
         vid_prop = get_video_properties(old_file)
-        if vid_prop['codec_name'] != 'hevc': 
+        if vid_prop['codec_name'] != 'hevc_temp_temp': 
             #encode_video(pathlib.Path(ffmpeg), old_file, new_file)
             parameters.append((pathlib.Path(ffmpeg), pathlib.Path(mkvpropedit), old_file, new_file))
     return parameters
@@ -77,15 +82,22 @@ if __name__ == "__main__":
     print_iterable(pbar)
     print(results)
     '''
-    pool = mp.Pool(int(mp.cpu_count()) - 8)
+    pool = mp.Pool(int(mp.cpu_count()) - 10)
     params = mp_parameters(dirs=dirs)
     # tqdm progress bar object of list
     pbar = tqdm(params)
     results = pool.starmap(edit_video, pbar)
     pool.close()
-    print("--------------------------------------------")
-    print("------   Takhle skoncil celej pool   -------")
-    print("--------------------------------------------")
+    str_before = '''
+    (--------------------------------------------)
+    (------   Takhle skoncil celej pool   -------)
+    (--------------------------------------------)
+    '''
+    print(str_before)
     print(json.dumps(results, indent=4), end='\r\n')
+    with open(pathlib.Path(log), 'a') as file:             
+        file.write(str_before)
+        file.write(json.dumps(results, indent=4))
+    
     
     

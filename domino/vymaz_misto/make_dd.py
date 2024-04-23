@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/bin/python3
 
 import os
 import sys
@@ -79,7 +79,7 @@ def print_mountpoint_information(mountpoint):
         command_df = utility_path_df + ' -h ' + mountpoint
         vysledok = subprocess.check_output(command_df, shell=True)
         print('MOUNTPOINT {0} INFORMATION:').format(mountpoint)
-        print vysledok
+        print(vysledok)
     except:
         print ("ERROR: I can't obtain information about mountpoint {0}").format(mountpoint)
         sys.exit(1)
@@ -111,7 +111,7 @@ def make_dd(bs_size, count, if_parameter='/dev/zero', of_parameter='/temporary.t
     Returns:make dd with parameters and True or False
     '''
     command_dd = utility_path_dd + ' bs=' + str(bs_size) + 'M' + ' count=' + str(count) + ' if=' + if_parameter + ' of=' + of_parameter
-    print command_dd
+    print(command_dd)
     try:
         output_command = subprocess.check_output(command_dd, shell=True)
         return True, output_command
@@ -164,16 +164,16 @@ print("\n")
 print('------------------------------------')
 print('MOUNTPOINT INFORMATION BEFORE dd')
 print('------------------------------------')
-print disk_usage(results.mountpoint)
+print(disk_usage(results.mountpoint))
 
 print("\n")
 
 print('------------------------------------')
 print('DD UTILITY PARAMETERS')
 print('------------------------------------')
-print('temporary file: {0}').format(temporary_file)
-print('block size bs={0}M').format(results.bs_size)
-print('count in dd is count={0}').format(count)
+print('temporary file: {0}'.format(temporary_file))
+print('block size bs={0}M'.format(results.bs_size))
+print('count in dd is count={0}'.format(count))
 
 print("\n")
 
@@ -187,15 +187,15 @@ print("\n")
 print('------------------------------------')
 print('MOUNTPOINT INFORMATION AFTER dd')
 print('------------------------------------')
-print disk_usage(results.mountpoint)
+print(disk_usage(results.mountpoint))
 
 print("\n")
 
 print('------------------------------------')
-print('REMOVING TEMPORARY FILE {0}').format(temporary_file)
+print('REMOVING TEMPORARY FILE {0}'.format(temporary_file))
 print('------------------------------------')
 if delete_file(temporary_file):
-    print('deleting file {0}: OK').format(temporary_file)
+    print('deleting file {0}: OK'.format(temporary_file))
 
 print("\n")
 
@@ -203,6 +203,6 @@ print('------------------------------------')
 print('MOUNTPOINT INFORMATION AFTER REMOVING TEMPORARY FILE')
 print('------------------------------------')
 make_sync()
-print disk_usage(results.mountpoint)
+print(disk_usage(results.mountpoint))
 
 print("\n") 
